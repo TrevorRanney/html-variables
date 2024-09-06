@@ -1,0 +1,8 @@
+
+<div>
+    $for(ingredient : food.ingredients)
+    {
+        <span>{{ingredient.name}}</span>
+        <span>{{ingredient.organic ? "✔️" : "" }}</span>
+    }
+</div>

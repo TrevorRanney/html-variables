@@ -1,0 +1,27 @@
+{
+  "name": "framework",
+  "version": "0.0.1",
+  "description": "A framework to quickly build websites",
+  "main": "index.js",
+  "scripts": {
+    "test": "set NODE_V8_COVERAGE=coverage-jasmine && c8 jasmine",
+    "test:watch": "nodemon --exec \"pnpm run test\" --ext js",
+    "jas": "jasmine"
+  },
+  "keywords": [
+    "backend",
+    "web",
+    "framework",
+    "builder"
+  ],
+  "author": "Trevor Ranney",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "jasmine": "^5.2.0",
+    "serve-handler": "^6.1.5",
+    "watch": "^1.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
