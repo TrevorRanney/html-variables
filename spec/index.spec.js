@@ -12,8 +12,6 @@ const normalizeWhitespace = (str) => {
 
 
 describe('frameWork', () => {
-    let request;
-    let response;
     let router;
 
     beforeEach(() => {
@@ -128,7 +126,7 @@ describe('frameWork', () => {
     it('should pass the test when handler is called', async () => {
         spyOn(handler, 'call').and.returnValue('200') // Spy on the handler
 
-        request = {
+        const request = {
             url: '/non-existing-route',
             headers: {
                 accept: 'text/html' // or 'application/json' if needed
@@ -136,7 +134,7 @@ describe('frameWork', () => {
         };
 
         // Mock the response object
-        response = {
+        const response = {
             end: jasmine.createSpy('end'),
             writeHead: jasmine.createSpy('writeHead')
         };
@@ -168,6 +166,55 @@ describe('frameWork', () => {
     });
 
 
+    it('should set custom 404 page function', async () => {
+        const custom404 = `<html>CUSTOM 404</html>`
+        const methods = { sendError: (request, response) => {
+                response.writeHead(404, { 'Content-Type': 'text/html' });
+                response.end(custom404)
+         }};
+        router.setHandlerMethods(methods)
+
+        const request = {
+            url: '/non-existing-route',
+            headers: {
+                accept: 'text/html' // or 'application/json' if needed
+            }
+        };
+        const response = {
+            writeHead: jasmine.createSpy('writeHead'),
+            end: jasmine.createSpy('end'),
+        };
+        await router.router(request, response);
+
+        expect(response.end.calls.mostRecent().args[0]).toEqual(custom404)
+    });
+
+    it('should set custom config', async () => {
+        const custom404 = `<html>CUSTOM 404</html>`
+        const config = {
+            public: 'public',
+            redirects: [
+                { source: "/old-page", destination: "/new-page", type: 301 }
+            ]
+        }
+        router.setHandlerConfig(config)
+
+        const request = {
+            url: '/old-page',
+            headers: {
+                accept: 'text/html'
+            }
+        };
+        const response = {
+            writeHead: jasmine.createSpy('writeHead'),
+            end: jasmine.createSpy('end'),
+        };
+        await router.router(request, response);
+        expect(response.writeHead).toHaveBeenCalledWith(301, { 'Location': '/new-page' });
+
+        // expect(response.end.calls.mostRecent().args[0]).toEqual(custom404)
+    });
+    
 });
 
 

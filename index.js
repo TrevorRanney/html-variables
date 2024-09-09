@@ -13,6 +13,8 @@ const frameWork = (name) => {
     var _baseRoute = './'
 	var _name = 'unnamed_router' || name
 	var _bodyUrl
+	var _config = {}
+	var _methods = {}
 
 	const matchesRegex = (route) => {
 		const regexes = Object.keys(_regexRoutes);
@@ -46,7 +48,6 @@ const frameWork = (name) => {
 
         if (extention == 'html') {
             return (request, response) => {
-
                 var html = fs.readFileSync(filePath).toString()
 				const finalHtml = evaluate(html, variables)
                 response.writeHead(200, { 'Content-Type': 'text/html' })
@@ -64,6 +65,12 @@ const frameWork = (name) => {
 	return {
 		evaluate,
 		fileRouter,
+		setHandlerConfig: (config) => {
+			_config = config
+		},
+		setHandlerMethods: (methods) => {
+			_methods = methods
+		},
 		setBody: (file) => {
             _bodyUrl = file
         },
@@ -109,7 +116,7 @@ const frameWork = (name) => {
 				firstMatchingRegexRoute(request, response)
 			}
 			else {
-				await handler(request, response);
+				await handler(request, response, _config, _methods)	
 			}
 		}
 	}
